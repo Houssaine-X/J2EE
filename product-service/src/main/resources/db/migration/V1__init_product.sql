@@ -19,65 +19,6 @@ INSERT INTO products (nom, description, prix, stock_quantity, disponible, catego
 ('Laptop Dell XPS 13', 'High-performance ultrabook', 1299.99, 10, TRUE, 1),
 ('The Great Gatsby', 'Classic American novel', 12.99, 50, TRUE, 2),
 ('Blue Jeans', 'Comfortable denim jeans', 49.99, 30, TRUE, 3);
-package com.catalogue.product.service;
-
-import com.catalogue.product.client.CategoryClient;
-import com.catalogue.product.dto.CategoryDTO;
-import com.catalogue.product.dto.ProductDTO;
-import com.catalogue.product.entity.Product;
-import com.catalogue.product.mapper.ProductMapper;
-import com.catalogue.product.repository.ProductRepository;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.List;
-
-@Service
-@Transactional
-@RequiredArgsConstructor
-@Slf4j
-public class ProductService {
-
-    private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
-    private final CategoryClient categoryClient;
-
-    public ProductDTO createProduct(ProductDTO productDTO) {
-        // Validate that category exists by calling category-service
-        try {
-            CategoryDTO category = categoryClient.getCategoryById(productDTO.getCategoryId());
-            log.info("Category validated: {}", category.getNom());
-        } catch (Exception e) {
-            throw new EntityNotFoundException("Category not found with id: " + productDTO.getCategoryId());
-        }
-
-        Product product = productMapper.toEntity(productDTO);
-        Product savedProduct = productRepository.save(product);
-        return enrichWithCategoryName(productMapper.toDTO(savedProduct));
-    }
-
-    @Transactional(readOnly = true)
-    public ProductDTO getProductById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
-        return enrichWithCategoryName(productMapper.toDTO(product));
-    }
-
-    @Transactional(readOnly = true)
-    public List<ProductDTO> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<ProductDTO> productDTOs = productMapper.toDTOList(products);
-        productDTOs.forEach(this::enrichWithCategoryName);
-        return productDTOs;
-    }
-
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with id: " + id));
 
         if (productDTO.getCategoryId() != null && !productDTO.getCategoryId().equals(existingProduct.getCategoryId())) {
             // Validate new category
