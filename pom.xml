@@ -15,6 +15,7 @@
     <modules>
         <module>config-server</module>
         <module>eureka-server</module>
+        <module>api-gateway</module>
         <module>category-service</module>
         <module>product-service</module>
         <module>order-service</module>
@@ -50,6 +51,10 @@
             <artifactId>mapstruct</artifactId>
             <version>1.6.3</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-netflix-eureka-server</artifactId>
         </dependency>
     </dependencies>
 
