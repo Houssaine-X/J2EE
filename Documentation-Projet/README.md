@@ -1,206 +1,230 @@
-# 📚 Documentation du Projet E-Commerce Microservices
+# Documentation du Projet E-Commerce Microservices
 
-## 📁 Contenu de ce Dossier
+## Contenu de ce Dossier
 
-Cette documentation complète couvre tous les aspects du projet de fin de semestre.
+Cette documentation complète couvre tous les aspects du projet e-commerce avec architecture microservices et système d'agrégation de produits externes.
 
 ---
 
-## 📄 Documents Disponibles
+## Documents Disponibles
 
-### 1️⃣ [Cahier de Charges](01-Cahier-de-Charges.md)
+### 1. Cahier de Charges (01-Cahier-de-Charges.md)
 **Descriptif complet du projet**
-- Contexte académique et objectifs
-- Fonctionnalités implémentées
-- Architecture technique
+- Concept de plateforme centralisée avec agrégation IA
+- Objectifs fonctionnels et techniques
+- Spécifications des 7-8 microservices
+- Architecture et flux de données
 - Modèle de données
-- Cas d'usage détaillés
-- Livrables et critères de validation
+- Scénarios d'utilisation
+- Planning et livrables
 
-📊 **Contenu**: 15 pages | ⏱️ **Lecture**: 15-20 min
-
----
-
-### 2️⃣ [Benchmark Technologies](02-Benchmark-Technologies.md)
-**Comparaison et justification des choix techniques**
-- Architectures comparées (Monolithe vs Microservices)
-- Frameworks backend (Spring Boot vs alternatives)
-- Service Discovery (Eureka vs Consul)
-- Bases de données (H2 vs MySQL vs NoSQL)
-- Communication (REST vs GraphQL vs gRPC)
-- Justification de chaque choix
-
-📊 **Contenu**: 12 pages | ⏱️ **Lecture**: 12-15 min
+**Contenu**: Complet | **Lecture**: 15-20 min
 
 ---
 
-### 3️⃣ [Roadmap & Planning](03-Roadmap-Planning.md)
-**Planning détaillé du projet**
-- Timeline semaine par semaine (6-8 semaines)
-- Tâches réalisées pour chaque phase
-- Jalons (milestones) atteints
-- Diagramme de Gantt
-- Méthodologie de travail
-- Évolution des compétences
+### 2. Benchmark Technologies (02-Benchmark-Technologies.md)
+**Justification des choix techniques**
+- Architecture Microservices vs alternatives
+- Spring Boot vs autres frameworks
+- Eureka vs Consul
+- H2 vs autres bases de données
+- REST + OpenFeign vs alternatives
+- PayPal vs Stripe
+- Resilience4j vs Hystrix
+- Tableau récapitulatif des choix
 
-📊 **Contenu**: 10 pages | ⏱️ **Lecture**: 10-12 min
+**Contenu**: Concis | **Lecture**: 10 min
 
 ---
 
-### 4️⃣ [Stack Technique](04-Stack-Technique.md)
-**Technologies utilisées en détail**
+### 3. Roadmap & Planning (03-Roadmap-Planning.md)
+**Planning réaliste sur 8 semaines**
+- Phase 1: Infrastructure et Services Core (Semaines 1-5)
+- Phase 2: Agrégation Simplifiée (Semaines 6-7)
+- Phase 3: Tests et Validation (Semaine 7.5)
+- Phase 4: Documentation et Présentation (Semaine 8)
+- Jalons et livrables par phase
+- Scope réaliste et fonctionnalités exclues
+
+**Contenu**: Pragmatique | **Lecture**: 10 min
+
+---
+
+### 4. Stack Technique (04-Stack-Technique.md)
+**Technologies utilisées**
 - Java 17 & Spring Boot 3.4.1
-- Spring Cloud (Eureka, Gateway, Config)
+- Spring Cloud (Eureka, Gateway, Config, OpenFeign)
+- PayPal REST API
+- Amazon Product API (agrégation externe)
 - Persistence (H2, JPA, Hibernate)
-- Utilities (Lombok, MapStruct, Bean Validation)
-- Resilience (Resilience4j, Circuit Breaker)
-- Build & Monitoring (Maven, Actuator)
-- Exemples de code
+- Résilience (Resilience4j)
+- Outils (Lombok, MapStruct, Bean Validation)
+- Architecture des ports
+- Flux de données
 
-📊 **Contenu**: 18 pages | ⏱️ **Lecture**: 15-20 min
+**Contenu**: Direct | **Lecture**: 12 min
 
 ---
 
-## 🎯 Guide de Lecture Rapide
+## Guide de Lecture Rapide
 
-### Pour une Présentation (20 min)
-1. Lire **Cahier de Charges** (sections principales)
-2. Consulter **Roadmap** (Gantt + jalons)
+### Pour une Présentation (15-20 min)
+1. Lire **Cahier de Charges** (sections 1-3)
+2. Consulter **Roadmap** (Phase overview)
 3. Parcourir **Stack Technique** (tableau récapitulatif)
 
-### Pour Comprendre les Choix (30 min)
-1. Lire **Benchmark Technologies**
-2. Consulter **Stack Technique** (justifications)
+### Pour Comprendre le Projet (30 min)
+1. Lire **Cahier de Charges** complet
+2. Consulter **Benchmark Technologies**
+3. Voir **Roadmap** pour le planning réaliste
 
-### Pour Reproduire le Projet (1h)
-1. Lire tous les documents dans l'ordre
-2. Consulter le code source en parallèle
-3. Tester avec Postman
+### Pour Approfondir (1h)
+Lire tous les documents dans l'ordre numéroté.
 
 ---
 
-## 📊 Résumé Exécutif
+## Résumé Exécutif
 
 ### Projet
-**Plateforme E-Commerce avec Architecture Microservices**
+**Plateforme E-Commerce Centralisée avec Recommandations et Affiliation**
 
-### Objectif
-Démontrer la maîtrise de l'architecture distribuée en développant 6 microservices interconnectés.
+### Concept
+Plateforme permettant aux utilisateurs de rechercher et comparer des produits de multiples sources (catalogue interne + sites externes comme Amazon) via une interface unique. Monétisation via affiliation sur les produits externes.
+
+### Architecture
+7-8 microservices interconnectés:
+- **Infrastructure**: Config Server, Eureka Server, API Gateway
+- **Core Business**: User Service, Product Service, Order Service, Payment Service
+- **Agrégation**: External Aggregator Service, AI Recommendation Service (optionnel)
 
 ### Technologies Clés
-- Spring Boot 3.4.1 + Spring Cloud
+- Spring Boot 3.4.1 + Spring Cloud 2024.0.0
 - Java 17
-- H2 Database (dev)
-- Eureka (Service Discovery)
-- API Gateway
-- Feign Clients
-- Resilience4j (Circuit Breaker)
+- H2 Database
+- PayPal REST API
+- Amazon Product API
+- OpenFeign (communication inter-services)
+- Resilience4j (circuit breakers)
 
-### Résultat
-✅ **Projet 100% Fonctionnel**
-- 6 microservices opérationnels
-- Communication inter-services validée
-- Gestion d'erreurs robuste (circuit breakers)
-- Documentation complète
-- Prêt pour démonstration
+### Timeline
+8 semaines (2 mois) - Semaines 1-5 complétées, Semaines 6-8 en cours
 
 ---
 
-## 🗂️ Autres Ressources
-
-### Dans le Projet
-- `/README.md` - Guide de démarrage rapide
-- `/Guides/` - Guides techniques détaillés
-- `/UML/` - Diagrammes visuels
-- `/Catalogue-Microservices-Postman-Collection.json` - Tests API
-- `/start-all-services.bat` - Script de lancement
+## Structure du Projet
 
 ### Code Source
 ```
-/config-server/       → Configuration centralisée (Port 8888)
-/eureka-server/       → Service Discovery (Port 8761)
-/api-gateway/         → Point d'entrée (Port 8080)
-/category-service/    → Gestion catégories (Port 8081)
-/product-service/     → Gestion produits (Port 8082)
-/order-service/       → Gestion commandes (Port 8083)
+/config-server/              → Configuration centralisée (8888)
+/eureka-server/              → Service Discovery (8761)
+/api-gateway/                → Point d'entrée (8080)
+/user-service/               → Gestion utilisateurs (8083)
+/product-service/            → Catalogue interne (8081)
+/order-service/              → Gestion commandes (8085)
+/payment-service/            → Paiements PayPal (8084)
+/external-aggregator-service/ → Agrégation externe (8087)
+/ai-recommendation-service/  → Recommandations (8086) [optionnel]
 ```
 
+### Ressources
+- `/README.md` - Guide de démarrage rapide (racine du projet)
+- `/Documentation-Projet/UML/` - Diagrammes architecture
+- `/Catalogue-Microservices-Postman-Collection.json` - Tests API
+- `/start-all-services.bat` - Script de lancement automatique
+
 ---
 
-## 🎓 Utilisation pour la Présentation
-
-### Support Visuel
-Tous ces documents peuvent être utilisés comme support pour la présentation orale.
+## Utilisation pour la Présentation
 
 ### Points Clés à Présenter
-1. **Architecture** (Cahier de Charges → schéma)
-2. **Choix Techniques** (Benchmark → tableau comparatif)
-3. **Réalisation** (Roadmap → Gantt + milestones)
-4. **Technologies** (Stack Technique → récapitulatif)
-5. **Démonstration Live** (Postman + Eureka + H2 Console)
 
-### Temps Estimé
-- Introduction: 2 min
-- Architecture: 5 min
-- Démonstration: 8 min
-- Code highlights: 3 min
-- Questions: 5 min
-**Total**: 23 minutes
+1. **Concept** (2 min)
+   - Plateforme centralisée pour comparaison de produits
+   - Agrégation multi-sources
+   - Monétisation par affiliation
 
----
+2. **Architecture** (3 min)
+   - 7 microservices
+   - Communication OpenFeign
+   - Circuit breakers
 
-## 🔮 Extensions Futures (Mentionner en Conclusion)
+3. **Démonstration Live** (10 min)
+   - Eureka Dashboard (services actifs)
+   - Recherche produit → Résultats internes + Amazon
+   - Création commande → Mise à jour stock
+   - Paiement PayPal (create/execute)
+   - Console H2 avec données
+   - Circuit breaker en action
 
-L'architecture actuelle permet d'ajouter facilement:
+4. **Technologies** (3 min)
+   - Spring Cloud ecosystem
+   - PayPal integration
+   - Amazon API aggregation
+   - Resilience patterns
 
-### Court Terme
-- Frontend web (React/Vue)
-- Dashboard administrateur
-- Authentification JWT
+5. **Questions & Réponses** (5 min)
 
-### Moyen Terme
-- **Intelligence Artificielle**:
-  - Chatbot conversationnel
-  - Recommandations produits
-  - Recherche par langage naturel
-  - Assistant vocal
-
-*Note*: L'IA est une vision conceptuelle pour démontrer l'extensibilité de l'architecture, mais n'est pas implémentée dans ce projet de semestre.
+**Total**: 20-25 minutes
 
 ---
 
-## ✅ Checklist Présentation
+## Scope Réaliste
+
+### Implémenté
+- Architecture microservices complète (7 services core)
+- Communication inter-services (OpenFeign)
+- Gestion commandes avec mise à jour stock automatique
+- Intégration PayPal sandbox
+- Circuit breakers et résilience
+- Persistance H2 (une base par service)
+
+### En Développement (Semaines 6-8)
+- External Aggregator Service avec Amazon API
+- Génération liens d'affiliation
+- Agrégation produits internes + externes
+- Recommandations simplifiées
+
+### Exclu du Scope
+- OpenAI GPT-4 (trop complexe/coûteux)
+- Multiples APIs externes (seulement Amazon)
+- Machine Learning personnalisé
+- Redis cache (optionnel)
+- Analyse vocale/image
+
+---
+
+## Checklist Présentation
 
 Avant la présentation, vérifier:
 
 - [ ] Tous les services démarrent sans erreur
-- [ ] Eureka Dashboard montre 6 services
-- [ ] Collection Postman testée et fonctionnelle
+- [ ] Eureka Dashboard montre tous les services
+- [ ] Collection Postman testée
 - [ ] H2 Console accessible
-- [ ] Documentation imprimée (si requis)
-- [ ] PowerPoint préparé
-- [ ] Vidéo backup (optionnel)
+- [ ] PayPal sandbox configuré
+- [ ] Documentation à jour
+- [ ] Diagrammes architecture disponibles
 - [ ] Questions potentielles anticipées
 
 ---
 
-## 📞 Contact
+## Résultat Attendu
 
-**Projet réalisé par**: [Votre nom]  
-**Date**: Novembre 2025  
-**Cours**: Architecture Logicielle / Systèmes Distribués  
-**Professeur**: [Nom du professeur]  
-**Institution**: [École/Université]
-
----
-
-## 📝 Notes
-
-- Cette documentation est volontairement concise et adaptée au scope d'un projet de fin de semestre (1-2 mois)
-- Les concepts d'IA mentionnés sont des extensions futures conceptuelles pour démontrer l'évolutivité de l'architecture
-- Le focus principal reste sur l'architecture microservices et les technologies Spring Cloud
+**Projet Fonctionnel Démontrant**:
+- Maîtrise architecture microservices
+- Communication inter-services (OpenFeign)
+- Intégration APIs externes (PayPal, Amazon)
+- Patterns de résilience (Circuit breaker)
+- Agrégation de données multi-sources
+- Modèle de monétisation par affiliation
 
 ---
 
-**Bonne chance pour la présentation! 🚀**
+
+## Notes
+
+- Documentation volontairement concise et adaptée au scope d'un projet de 2 mois
+- Focus sur architecture microservices et intégration APIs externes
+- Scope réaliste basé sur le temps disponible
+- Tous les fichiers numérotés pour lecture séquentielle
 
