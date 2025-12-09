@@ -1,439 +1,301 @@
-# Cahier de Charges - Projet E-Commerce Microservices
+# Cahier des Charges - Plateforme E-Commerce Centralisée
 
-## 📋 Informations du Projet
+## 1. Informations Générales
 
-**Titre**: Plateforme E-Commerce avec Architecture Microservices et Paiement PayPal  
-**Type**: Projet de fin de semestre  
-**Durée**: 2 mois (Octobre-Décembre 2025)  
-**Cours**: Architecture Logicielle / Systèmes Distribués
+**Projet**: Plateforme E-Commerce Centralisée avec Recommandations IA et Affiliation
+**Période**: Octobre - Décembre 2025
+**Type**: Projet académique
 
----
+## 2. Concept du Projet
 
-## 🎯 Objectif
+Plateforme e-commerce permettant aux utilisateurs de rechercher et comparer des produits de multiples sources (catalogue interne et sites externes) via un système de recommandation basé sur l'IA. L'utilisateur accède à une interface unique pour comparer prix et caractéristiques sans naviguer sur plusieurs sites. La monétisation s'effectue via affiliation sur les produits externes.
 
-Développer une plateforme e-commerce complète en utilisant une **architecture microservices moderne**, démontrant la maîtrise des concepts d'architecture distribuée, de l'intégration de services externes (PayPal), et préparant une évolution vers l'Intelligence Artificielle.
+## 3. Objectifs
 
----
+### Fonctionnels
+- Catalogue produits interne consultable
+- Système de recommandation IA pour recherche de produits externes
+- Agrégation multi-sources en temps réel
+- Comparaison unifiée des produits
+- Génération de revenus via affiliation
 
-## 📚 Contexte Académique
+### Techniques
+- Architecture microservices distribuée
+- Intégration IA pour recommandations
+- Web scraping et API externes
+- Paiements PayPal pour produits internes
+- Résilience et gestion d'erreurs
 
-Ce projet met en pratique:
-- Architecture microservices
-- Communication REST entre services
-- Service Discovery (Eureka)
-- API Gateway
-- Configuration centralisée
-- Design patterns (Repository, Service Layer, DTO)
+## 4. Spécifications Fonctionnelles
 
----
+### 4.1 User Service
+- Gestion des comptes (CLIENT, ADMIN)
+- Authentification et profils utilisateur
+- Historique de commandes
 
-## ✨ Fonctionnalités Implémentées
+### 4.2 Product Service
+- CRUD produits avec catégories intégrées
+- Gestion stock et disponibilité
+- Recherche par catégorie et mot-clé
 
-### 1. Gestion des Utilisateurs (User Service) 🆕
-- **Rôles**: CLIENT et ADMIN
-- Créer un utilisateur (inscription)
-- Authentifier un utilisateur
-- Consulter un utilisateur par ID ou email
-- Modifier les informations d'un utilisateur
-- Activer/Désactiver un compte utilisateur
-- Filtrer utilisateurs par rôle
-- **Consulter l'historique des commandes d'un utilisateur** (via OpenFeign)
+### 4.3 Order Service
+- Création commandes (produits internes)
+- Gestion statuts (PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED)
+- Vérification disponibilité via OpenFeign
+- Mise à jour stock automatique
+- Annulation avec restauration stock
 
-### 2. Gestion des Produits (Product Service)
-- Créer un produit avec **catégorie intégrée** (plus de service séparé)
-- Lister tous les produits
-- Filtrer produits par catégorie
-- Rechercher des produits par mot-clé
-- Consulter un produit par ID
-- Modifier un produit (prix, stock, catégorie)
-- Supprimer un produit
-- Gérer le stock et la disponibilité
-- **Catégorie embarquée** (categoryName, categoryDescription)
+### 4.4 Payment Service
+- Intégration PayPal (produits internes)
+- Workflow: Create → Approve → Execute
+- Gestion transactions: PENDING, COMPLETED, FAILED, CANCELLED, REFUNDED
 
-### 3. Gestion des Commandes (Order Service)
-- Créer une commande avec plusieurs produits
-- **Référence utilisateur par userId** (pas de duplication de données)
-- Lister toutes les commandes
-- Consulter une commande par ID ou numéro
-- Filtrer commandes par utilisateur
-- Filtrer commandes par statut
-- Filtrer commandes par période
-- Modifier le statut d'une commande
-- Annuler une commande (restaure le stock)
-- Calcul automatique du montant total
-- **Vérification utilisateur** via OpenFeign
-- **Mise à jour stock automatique** via OpenFeign
+### 4.5 External Aggregator Service
+- Intégration UNE API externe (Amazon prioritaire)
+- Normalisation des données produits
+- Génération liens d'affiliation automatique
+- Gestion erreurs et fallback
+- Cache simple (optionnel)
 
-### 4. Gestion des Paiements (Payment Service) 🆕💳
-- **Intégration PayPal complète**
-- Créer un paiement PayPal
-- Exécuter un paiement après approbation utilisateur
-- Annuler un paiement
-- Consulter l'historique des paiements
-- Filtrer paiements par commande
-- Filtrer paiements par utilisateur
-- Filtrer paiements par statut
-- **États**: PENDING, COMPLETED, FAILED, CANCELLED, REFUNDED
+### 4.6 AI Recommendation Service (Version Simplifiée)
+- Analyse basique des requêtes utilisateur (regex/keywords)
+- Recherche dans Product Service (internes)
+- Appel External Aggregator (externes)
+- Agrégation et ranking simple des résultats
+- Tracking clics basique
 
-### 5. Infrastructure
-- **Eureka Server**: Enregistrement et découverte des services
-- **Config Server**: Configuration centralisée
-- **API Gateway**: Point d'entrée unique avec routing et circuit breaker
+Note: Pas d'OpenAI GPT-4, Machine Learning complexe, ou analyse vocale/image
+
+### 4.7 Infrastructure
+- **Eureka Server**: Découverte de services (8761)
+- **Config Server**: Configuration centralisée (8888)
+- **API Gateway**: Point d'entrée unique (8080)
 - **OpenFeign**: Communication inter-services
 - **Resilience4j**: Circuit breaker et fallback
 
----
+## 5. Architecture
 
-## 🏗️ Architecture
+### 5.1 Microservices
 
-```
-┌─────────────────────────────────────────────────┐
-│              Client / Postman                   │
-└──────────────────┬──────────────────────────────┘
-                   │
-                   ↓
-         ┌─────────────────┐
-         │  API Gateway    │ Port 8080
-         │  (Routing +     │
-         │  Circuit        │
-         │  Breaker)       │
-         └────────┬────────┘
-                  │
-         ┌────────┴────────┐
-         │                 │
-         ↓                 ↓
-    ┌────────┐        ┌────────┐
-    │ Eureka │        │ Config │
-    │ Server │        │ Server │
-    └────────┘        └────────┘
-     Port 8761        Port 8888
-         │
-    ┌────┴────┬────────────┬────────────┬──────────┐
-    │         │            │            │          │
-    ↓         ↓            ↓            ↓          ↓
-┌─────────┬─────────┬──────────┬──────────┐
-│  User   │ Product │  Order   │ Payment  │
-│ Service │ Service │ Service  │ Service  │
-│Port 8083│Port 8081│Port 8085 │Port 8084 │
-└────┬────┴────┬────┴────┬─────┴────┬─────┘
-     │         │         │          │
-     ↓         ↓         ↓          ↓
-┌─────────┬─────────┬──────────┬──────────┐
-│  H2 DB  │  H2 DB  │   H2 DB  │  H2 DB   │
-│  user   │ product │  order   │ payment  │
-└─────────┴─────────┴──────────┴──────────┘
-                                    │
-                                    ↓
-                            ┌──────────────┐
-                            │  PayPal API  │
-                            │   (External) │
-                            └──────────────┘
-```
+**Infrastructure (3 services)**
+- API Gateway (8080): Routage et load balancing
+- Eureka Server (8761): Registre de services
+- Config Server (8888): Configuration centralisée
 
-### Communication Inter-Services (OpenFeign)
+**Core Business (4 services)**
+- User Service (8083): Gestion utilisateurs
+- Product Service (8081): Catalogue interne
+- Order Service (8085): Gestion commandes
+- Payment Service (8084): Paiements PayPal
 
-```
-User Service ←──────→ Order Service
-                          ↓
-                    Product Service
-                          
-Payment Service ────→ PayPal API (REST)
-```
+**Agrégation (1-2 services)**
+- External Aggregator Service (8087): Agrégation produits externes + affiliation
+- AI Recommendation Service (8086): Recommandations simplifiées (optionnel selon temps)
 
----
+**Total: 7-8 microservices**
 
-## 🔗 Communication Inter-Services
+### 5.2 Flux Principal (Recherche Simplifiée)
 
-### Product Service → Category Service
-Le Product Service vérifie que la catégorie existe avant de créer un produit.
+1. Utilisateur recherche "laptop gaming"
+2. API Gateway → External Aggregator Service
+3. External Aggregator Service:
+   - Recherche Product Service (internes)
+   - Appelle API Amazon (externes)
+   - Normalisation données
+   - Génération liens affiliation
+4. External Aggregator:
+   - Agrégation résultats internes + externes
+   - Ranking simple
+   - Retourne liste unifiée
 
-**Exemple**:
-```
-POST /api/products
-{
-  "nom": "Laptop ASUS",
-  "categoryId": 1,
-  "prix": 1299.99
-}
+### 5.3 Communication Inter-Services (OpenFeign)
 
-Product Service appelle:
-GET http://category-service/api/categories/1
+- Order Service ↔ User Service: Validation utilisateur
+- Order Service ↔ Product Service: Stock et prix
+- External Aggregator ↔ Product Service: Produits internes
+- External Aggregator ↔ Amazon API: Produits externes
+- Payment Service ↔ PayPal API: Transactions
 
-Si catégorie existe → Produit créé ✅
-Sinon → Erreur 400 ❌
-```
+### 5.4 Persistance
 
-### Order Service → Product Service
-L'Order Service vérifie la disponibilité et met à jour le stock.
+**Bases de données H2 (une par service)**
+- user_db, product_db, order_db, payment_db, aggregator_db
 
-**Exemple**:
-```
-POST /api/orders
-{
-  "orderItems": [
-    {"productId": 5, "quantity": 2}
-  ]
-}
+**Cache (Optionnel)**
+- Résultats API externe (si temps disponible)
 
-Order Service appelle:
-GET http://product-service/api/products/5
-→ Vérifie stock disponible
-PUT http://product-service/api/products/5/stock
-→ Réduit le stock de 2
-```
+### 5.5 APIs Externes
 
----
+- Amazon Product API: Produits Amazon
+- PayPal REST API: Paiements
+- Amazon Associates: Affiliation
 
-## 📊 Modèle de Données
+## 6. Modèle de Données (Résumé)
 
-### Category
-```
-- id: Long (clé primaire)
-- nom: String (unique, requis)
-- description: String
-- createdAt: Timestamp
-- updatedAt: Timestamp
-```
+### User
+id, nom, prenom, email, role (CLIENT/ADMIN), actif, timestamps
 
 ### Product
-```
-- id: Long (clé primaire)
-- nom: String (requis)
-- description: String
-- prix: BigDecimal (requis)
-- stockQuantity: Integer (requis)
-- disponible: Boolean (requis)
-- categoryId: Long (référence Category)
-- imageUrl: String
-- createdAt: Timestamp
-- updatedAt: Timestamp
-```
+id, nom, description, prix, stockQuantity, disponible, categoryName, categoryDescription, imageUrl, timestamps
 
 ### Order
-```
-- id: Long (clé primaire)
-- orderNumber: String (unique)
-- clientEmail: String (requis)
-- clientNom: String (requis)
-- clientPrenom: String (requis)
-- adresseLivraison: String (requis)
-- status: Enum (PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED)
-- montantTotal: BigDecimal (calculé)
-- createdAt: Timestamp
-- updatedAt: Timestamp
-```
+id, orderNumber, userId, status (PENDING/CONFIRMED/SHIPPED/DELIVERED/CANCELLED), montantTotal, timestamps
 
 ### OrderItem
-```
-- id: Long (clé primaire)
-- orderId: Long (référence Order)
-- productId: Long (référence Product)
-- quantity: Integer (requis)
-- prixUnitaire: BigDecimal (requis)
-- sousTotal: BigDecimal (calculé)
-```
+id, orderId, productId, quantity, prixUnitaire, sousTotal
 
----
+### Payment
+id, orderId, userId, amount, currency, method (PAYPAL), status (PENDING/COMPLETED/FAILED/CANCELLED/REFUNDED), paypalPaymentId, paypalPayerId, timestamps
 
-## 🔄 Cas d'Usage
+### ExternalProduct
+id, externalId, nom, description, prix, devise, source (AMAZON), externalUrl, affiliateLink, imageUrl, categoryName, disponible, rating, cachedAt, timestamps
 
-### Scénario 1: Créer un Produit
-1. Admin crée une catégorie "Électronique"
-2. Admin crée un produit "Laptop" dans la catégorie "Électronique"
-3. Product Service vérifie que la catégorie existe
-4. Le produit est créé avec succès
+### SearchQuery (Optionnel)
+id, userId, queryText, resultsCount, clickedProductId, clickedSource, timestamps
 
-### Scénario 2: Passer une Commande
-1. Client sélectionne 2 produits
-2. Client crée une commande avec ses informations
-3. Order Service vérifie la disponibilité des 2 produits
-4. Order Service calcule le total (quantité × prix)
-5. La commande est créée avec statut "PENDING"
-6. Le stock des produits est automatiquement réduit
+## 7. Scénarios d'Utilisation
 
-### Scénario 3: Service Indisponible (Circuit Breaker)
-1. Product Service essaie d'appeler Category Service
-2. Category Service est down
-3. Circuit breaker active le fallback
-4. Product Service retourne "Category Unavailable" au lieu d'une erreur
+### 7.1 Recherche avec Agrégation (Principal)
+1. Utilisateur: "laptop gaming"
+2. External Aggregator Service reçoit requête
+3. Recherche Product Service (internes) + API Amazon (externes)
+4. Normalisation et génération liens affiliation
+5. Agrégation et ranking simple
+6. Affichage liste unifiée (ex: 3 internes + 10 Amazon)
+7. Clic produit externe → Redirection avec lien affiliation
 
----
+### 7.2 Achat Produit Interne
+1. Sélection produit catalogue interne
+2. Vérification stock et utilisateur
+3. Création commande (PENDING)
+4. Réduction stock automatique
+5. Calcul montant
+6. Processus paiement PayPal
 
-## 🛠️ Technologies Utilisées
+### 7.3 Paiement PayPal
+1. Création transaction PayPal
+2. Redirection utilisateur
+3. Approbation paiement
+4. Exécution paiement
+5. Statut COMPLETED
 
-### Backend
-- **Spring Boot** 3.4.1: Framework principal
-- **Spring Cloud**: Microservices (Eureka, Gateway, Config)
-- **Java** 17: Langage de programmation
-- **Maven**: Gestionnaire de dépendances
+### 7.4 Résilience
+1. Recherche "iPhone 15"
+2. Si Amazon API indisponible → Circuit breaker
+3. Fallback: retourne seulement produits internes
+4. Agrégation sources disponibles
+
+## 8. Technologies
+
+### Backend Core
+- Spring Boot 3.4.1, Spring Cloud, Java 17, Maven
+
+### Agrégation
+- Amazon Product API, Jsoup (parsing HTML)
+
+### Cache (Optionnel)
+- Redis ou Spring Cache simple
 
 ### Persistence
-- **Spring Data JPA**: ORM
-- **Hibernate**: Implémentation JPA
-- **H2 Database**: Base de données en mémoire (dev)
-- **MySQL** (optionnel): Pour production
+- Spring Data JPA, Hibernate, H2 Database
+
+### Communication
+- OpenFeign, RestTemplate
+
+### Résilience
+- Resilience4j Circuit Breaker
+
+### Paiement et Affiliation
+- PayPal REST API
+- Amazon Associates
+
+### Monitoring
+- Spring Boot Actuator, Logback
 
 ### Outils
-- **Lombok**: Réduction code boilerplate
-- **MapStruct**: Mapping Entity ↔ DTO
-- **Bean Validation**: Validation des données
-- **Feign Client**: Communication REST inter-services
+- Lombok, MapStruct, Bean Validation
 
----
+## 9. Planning (8 Semaines - 2 Mois)
 
-## 📅 Planning Réalisé
+### Phase 1: Infrastructure et Services Core (Semaines 1-5)
+- Config/Eureka/Gateway Server
+- User Service: CRUD avec rôles
+- Product Service: CRUD avec catégories
+- Order Service: Gestion commandes + OpenFeign
+- Payment Service: Intégration PayPal
+- Tests inter-services
 
-### Phase 1: Infrastructure (1 semaine)
-- ✅ Setup projet Maven multi-modules
-- ✅ Config Server
-- ✅ Eureka Server
-- ✅ API Gateway
+### Phase 2: Agrégation Simplifiée (Semaines 6-7)
+- AI Recommendation Service (version simplifiée, sans OpenAI)
+- External Aggregator + UNE API externe (Amazon prioritaire)
+- Tracking affiliation basique
+- Cache simple (optionnel)
 
-### Phase 2: Services Métier (2-3 semaines)
-- ✅ Category Service (CRUD)
-- ✅ Product Service (CRUD + Feign Client)
-- ✅ Order Service (CRUD + Feign Client)
+### Phase 3: Tests et Validation (Semaine 7.5)
+- Tests de bout en bout
+- Validation tous scénarios
+- Circuit breakers
 
-### Phase 3: Intégration (1 semaine)
-- ✅ Communication inter-services
-- ✅ Circuit breakers (Resilience4j)
-- ✅ Tests des APIs (Postman)
+### Phase 4: Documentation et Présentation (Semaine 8)
+- Documentation technique finale
+- Diagrammes architecture/classes
+- Guides utilisation
+- Démonstration live
 
-### Phase 4: Documentation (Dernière semaine)
-- ✅ Documentation technique
-- ✅ Diagrammes UML
-- ✅ Préparation présentation
+## 10. Livrables
 
----
-
-## 🚀 Livrables
-
-- [x] Code source complet (6 microservices)
-- [x] Script de démarrage (`start-all-services.bat`)
-- [x] Collection Postman pour tester les APIs
-- [x] Documentation technique (ce document)
-- [x] Diagrammes UML
-- [x] Présentation PowerPoint
-- [x] Rapport de projet
-
----
-
-## 🎓 Compétences Démontrées
-
-### Architecture
-- ✅ Conception d'une architecture microservices
-- ✅ Découplage des services
-- ✅ Service Discovery
-- ✅ API Gateway pattern
-
-### Développement
-- ✅ Spring Boot & Spring Cloud
-- ✅ API REST (GET, POST, PUT, DELETE)
-- ✅ Communication synchrone (Feign)
-- ✅ Gestion d'erreurs (Circuit breaker)
-
-### Base de Données
-- ✅ JPA/Hibernate
-- ✅ Modélisation relationnelle
-- ✅ Migrations de schéma
-
-### Bonnes Pratiques
-- ✅ Clean Code
-- ✅ Design Patterns (Repository, Service, DTO)
-- ✅ Documentation API
-- ✅ Gestion de configuration
-
----
-
-## 🔮 Extensions Futures (Hors Périmètre Actuel)
-
-Si le projet devait être étendu, voici des pistes:
-
-### Frontend
-- Interface web (React/Vue)
-- Dashboard administrateur
-- Interface client
-
-### Fonctionnalités Avancées
-- Authentification (JWT)
-- Système de paiement
-- Notifications email
-- Recherche avancée
-
-### Intelligence Artificielle (Vision Longue Terme)
-- **Chatbot conversationnel**: "Je cherche un laptop gaming"
-- **Recommandations**: Suggérer des produits similaires
-- **Assistant vocal**: Passer commande par dialogue
-
-**Note**: L'IA n'est pas implémentée dans ce projet de semestre, mais l'architecture microservices facilite son ajout futur.
-
----
-
-## ✅ Critères de Validation
-
-Le projet est considéré réussi si:
-
-### Fonctionnel
-- [x] Les 7 microservices démarrent sans erreur
-- [x] Tous les services apparaissent dans Eureka Dashboard
-- [x] Toutes les APIs REST fonctionnent correctement
-- [x] Les communications inter-services OpenFeign marchent
-- [x] Les données persistent en base H2
-- [x] L'intégration PayPal fonctionne (sandbox)
-- [x] Les circuit breakers s'activent en cas d'erreur
-
-### Technique
-- [x] Code propre et bien structuré (packages logiques)
-- [x] Gestion des erreurs implémentée partout
-- [x] Circuit breakers fonctionnels (Resilience4j)
-- [x] Documentation à jour et complète
-- [x] Tests unitaires pour Payment Service (7/7 passed)
-- [x] Collection Postman exhaustive
-
-### Démonstration
-Pouvoir montrer en direct:
-1. ✅ Eureka Dashboard avec tous les services enregistrés
-2. ✅ Création d'un utilisateur CLIENT via Postman
-3. ✅ Création d'un produit avec catégorie via Postman
-4. ✅ Création d'une commande (OpenFeign → Product Service pour stock)
-5. ✅ Création d'un paiement PayPal
-6. ✅ Consultation de l'approvalUrl PayPal
-7. ✅ Historique des commandes d'un utilisateur (OpenFeign User → Order)
-8. ✅ Console H2 avec les données de chaque service
-
-### Architecture
-- [x] Séparation claire des responsabilités
-- [x] Chaque service a sa propre base de données
-- [x] Communication via API REST (pas de couplage DB)
-- [x] Configuration centralisée fonctionnelle
-- [x] Service Discovery opérationnel
+### Code
+- 7 microservices (3 Infrastructure + 4 Core + Aggregator simplifié)
+- Scripts démarrage
+- Collection Postman
 
 ### Documentation
-- [x] Cahier de charges complet
-- [x] Diagrammes d'architecture (Mermaid)
-- [x] Diagrammes de classes détaillés
-- [x] Guide d'intégration PayPal
-- [x] Collection Postman documentée
-- [x] README avec instructions de démarrage
-4. Création d'une commande avec plusieurs produits
-5. H2 Console montrant les données
+- Cahier de charges, documentation technique
+- Diagrammes UML
+- Guides déploiement et APIs
 
----
+### Tests
+- Tests unitaires et d'intégration
+- Validation scénarios utilisateur
 
-## 🎯 Résultat Final
+## 11. Critères de Validation
 
-**Statut**: ✅ **PROJET COMPLET ET FONCTIONNEL**
+### Fonctionnels
+- Tous services démarrent et s'enregistrent dans Eureka
+- APIs REST fonctionnelles
+- OpenFeign opérationnel
+- Persistance H2
+- PayPal sandbox fonctionnel
+- Circuit breakers actifs
+- Agrégation d'au moins UNE source externe
+- Recherche produits internes + externes
+- Tracking clics basique
 
-- 6 microservices opérationnels
-- Communication inter-services validée
-- Circuit breakers implémentés
-- Documentation complète
-- Prêt pour démonstration
+### Démonstration
+1. Eureka Dashboard (7 services)
+2. Recherche produit → Résultats internes + externes
+3. Création commande → Stock mis à jour
+4. Paiement PayPal complet
+5. Console H2 avec données
+6. Circuit breaker en action
 
----
+## 12. Scope Révisé (Réaliste pour 2 Mois)
 
-**Projet réalisé par**: [Votre nom]  
-**Professeur**: [Nom du professeur]  
-**Date**: Novembre 2025  
-**Institution**: [Votre école/université]
+### Inclus
+- Architecture microservices (7 services)
+- Catalogue interne complet
+- Agrégation UNE source externe (Amazon)
+- Recommandations simples (sans IA complexe)
+- Paiements PayPal
+- Tracking affiliation basique
+- Communication OpenFeign
+- Circuit breakers
+
+### Exclu (Hors Scope)
+- OpenAI GPT-4 (trop complexe/coûteux)
+- Multiples sources externes (seulement Amazon)
+- Service Affiliation dédié (fonctionnalité intégrée)
+- Redis cache (optionnel)
+- Machine Learning personnalisé
+- Analyse vocale/image
 
