@@ -36,11 +36,7 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <!-- Eureka Jersey3 Client for Spring Boot 3.x / Jakarta EE compatibility -->
-        <dependency>
-            <groupId>com.netflix.eureka</groupId>
-            <artifactId>eureka-client-jersey3</artifactId>
-        </dependency>
+
 
         <!-- Spring Cloud: Config Client -->
         <dependency>
