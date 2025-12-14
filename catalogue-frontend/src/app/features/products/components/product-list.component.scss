@@ -1,0 +1,160 @@
+.product-list-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2rem;
+
+  h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+
+  .search-bar {
+    max-width: 500px;
+
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+::ng-deep {
+  .product-card {
+    height: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .p-card-body {
+      padding: 1rem;
+    }
+
+    .p-card-footer {
+      padding: 1rem;
+      border-top: 1px solid #e9ecef;
+    }
+  }
+}
+
+.product-image {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+  }
+}
+
+.product-details {
+  .product-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    min-height: 3rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-meta {
+    margin-bottom: 1rem;
+
+    .product-category {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #6c757d;
+      font-size: 0.85rem;
+      padding: 0.25rem 0.75rem;
+      background: #e9ecef;
+      border-radius: 1rem;
+
+      i {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .product-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2196f3;
+    }
+  }
+}
+
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+
+  ::ng-deep .p-button {
+    flex: 1;
+
+    &.p-button-text {
+      flex: 0;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+
+  p {
+    margin-top: 1rem;
+    color: #999;
+    font-size: 1.1rem;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .product-list-container {
+    padding: 1rem;
+  }
+
+  .header {
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .product-image {
+    height: 150px;
+  }
+}
+

@@ -1,0 +1,88 @@
+<div class="product-list-container">
+  <div class="header">
+    <h1>Catalogue de Produits</h1>
+    <div class="search-bar">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          type="text"
+          pInputText
+          placeholder="Rechercher des produits..."
+          #searchInput
+          (input)="onSearch(searchInput.value)" />
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="loading$ | async" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <p-message
+    *ngIf="error$ | async as error"
+    severity="error"
+    [text]="error">
+  </p-message>
+
+  <p-dataView
+    *ngIf="!(loading$ | async)"
+    [value]="(products$ | async) || []"
+    layout="grid">
+    <ng-template let-product pTemplate="gridItem">
+      <div class="col-12 md:col-6 lg:col-4 xl:col-3 p-2">
+        <p-card [header]="product.nom" styleClass="product-card">
+          <ng-template pTemplate="header">
+            <div class="product-image">
+              <img
+                [src]="product.imageUrl || 'assets/images/no-image.svg'"
+                [alt]="product.nom"
+                onerror="this.src='assets/images/no-image.svg'" />
+            </div>
+          </ng-template>
+
+          <div class="product-details">
+            <p class="product-description">{{ product.description }}</p>
+
+            <div class="product-meta">
+              <span class="product-category">
+                <i class="pi pi-tag"></i>
+                {{ product.categoryName }}
+              </span>
+            </div>
+
+            <div class="product-info">
+              <div class="price">{{ formatPrice(product.prix) }}</div>
+              <p-tag
+                [value]="'Stock: ' + product.stockQuantity"
+                [severity]="getStockSeverity(product.stockQuantity)">
+              </p-tag>
+            </div>
+          </div>
+
+          <ng-template pTemplate="footer">
+            <div class="product-actions">
+              <p-button
+                icon="pi pi-shopping-cart"
+                label="Ajouter au panier"
+                styleClass="p-button-success"
+                [disabled]="product.stockQuantity === 0">
+              </p-button>
+              <p-button
+                icon="pi pi-eye"
+                styleClass="p-button-text p-button-secondary">
+              </p-button>
+            </div>
+          </ng-template>
+        </p-card>
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="empty">
+      <div class="empty-state">
+        <i class="pi pi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+        <p>Aucun produit trouvé</p>
+      </div>
+    </ng-template>
+  </p-dataView>
+</div>
+

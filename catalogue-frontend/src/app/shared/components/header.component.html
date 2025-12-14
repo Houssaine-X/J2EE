@@ -1,0 +1,26 @@
+<div class="header-container">
+  <p-menubar [model]="menuItems">
+    <ng-template pTemplate="start">
+      <div class="logo">
+        <i class="pi pi-shopping-cart"></i>
+        <span>E-Commerce</span>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <div class="header-actions">
+        <p-button
+          icon="pi pi-shopping-cart"
+          [badge]="'0'"
+          badgeClass="p-badge-danger"
+          styleClass="p-button-text p-button-rounded">
+        </p-button>
+        <p-button
+          icon="pi pi-user"
+          label="Connexion"
+          styleClass="p-button-text">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>
+

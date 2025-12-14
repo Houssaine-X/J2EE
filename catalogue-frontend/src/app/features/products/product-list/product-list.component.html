@@ -1,0 +1,106 @@
+<div class="product-list-container">
+  <div class="header-section">
+    <h1>Product Catalogue</h1>
+    <p class="subtitle">Browse our collection of products</p>
+  </div>
+
+  <div class="filter-section">
+    <div class="search-bar">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="searchKeyword"
+          (keyup.enter)="onSearch()"
+          placeholder="Search products..."
+          class="search-input"
+        />
+      </span>
+      <p-button
+        label="Search"
+        icon="pi pi-search"
+        (onClick)="onSearch()"
+        styleClass="p-button-primary"
+      ></p-button>
+    </div>
+  </div>
+
+  <div *ngIf="loading$ | async" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Loading products...</p>
+  </div>
+
+  <div *ngIf="error$ | async as error" class="error-message">
+    <i class="pi pi-exclamation-triangle"></i>
+    <p>{{ error }}</p>
+    <p-button label="Retry" (onClick)="loadProducts()"></p-button>
+  </div>
+
+  <div class="products-grid" *ngIf="!(loading$ | async) && !(error$ | async)">
+    <div class="product-card-wrapper" *ngFor="let product of (products$ | async)">
+      <p-card [header]="product.nom" styleClass="product-card">
+        <ng-template pTemplate="header">
+          <div class="product-image-container">
+            <img
+              [src]="product.imageUrl || 'assets/images/no-image.svg'"
+              [alt]="product.nom"
+              class="product-image"
+            />
+            <p-tag
+              [value]="getStockLabel(product)"
+              [severity]="getStockSeverity(product)"
+              styleClass="stock-badge"
+            ></p-tag>
+          </div>
+        </ng-template>
+
+        <div class="product-content">
+          <p class="product-category">
+            <i class="pi pi-tag"></i>
+            {{ product.categoryName }}
+          </p>
+          <p class="product-description">
+            {{ product.description || 'No description available' }}
+          </p>
+          <div class="product-stock">
+            <i class="pi pi-box"></i>
+            <span>Stock: {{ product.stockQuantity }}</span>
+          </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="product-footer">
+            <div class="product-price">
+              <span class="price-label">Price:</span>
+              <span class="price-value">{{ product.prix | currency: 'EUR' }}</span>
+            </div>
+            <div class="product-actions">
+              <p-button
+                icon="pi pi-shopping-cart"
+                label="Add to Cart"
+                [disabled]="!product.disponible || product.stockQuantity === 0"
+                styleClass="p-button-success"
+              ></p-button>
+              <p-button
+                icon="pi pi-eye"
+                styleClass="p-button-text p-button-secondary"
+                [routerLink]="['/products', product.id]"
+              ></p-button>
+            </div>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
+
+  <div
+    *ngIf="!(loading$ | async) && !(error$ | async) && ((products$ | async)?.length === 0)"
+    class="no-products"
+  >
+    <i class="pi pi-inbox"></i>
+    <p>No products found</p>
+    <p-button label="Clear Filters" (onClick)="loadProducts()"></p-button>
+  </div>
+</div>
+
