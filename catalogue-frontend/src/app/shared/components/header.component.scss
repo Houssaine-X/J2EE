@@ -1,49 +1,200 @@
-.header-container {
+.navbar {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e5e7eb;
+}
 
-  ::ng-deep .p-menubar {
-    border-radius: 0;
-    padding: 0.75rem 2rem;
-    border: none;
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+  @media (max-width: 768px) {
+    padding: 0.75rem 1rem;
+  }
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.75rem;
+    color: #667eea;
+  }
+
+  span {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+
+    i {
       font-size: 1.5rem;
-      font-weight: 700;
-      color: #2196f3;
-
-      i {
-        font-size: 2rem;
-      }
-
-      span {
-        font-size: 1.25rem;
-      }
     }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    span {
+      font-size: 1.25rem;
     }
   }
 }
 
-@media (max-width: 768px) {
-  .header-container {
-    ::ng-deep .p-menubar {
-      padding: 0.5rem 1rem;
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
 
-      .logo {
-        span {
-          display: none;
-        }
-      }
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    color: #667eea;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+
+    &:hover {
+      background: linear-gradient(135deg, #5568d3 0%, #653a8a 100%);
+    }
+  }
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  @media (max-width: 576px) {
+    gap: 0.5rem;
+  }
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: transparent;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #1a1a1a;
+  }
+
+  @media (max-width: 576px) {
+    padding: 0.5rem 0.75rem;
+
+    span {
+      display: none;
+    }
+  }
+}
+
+.cart-btn {
+  position: relative;
+
+  .cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1.2;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  }
+}
+
+.nav-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: #1a1a1a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background: #374151;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 576px) {
+    padding: 0.5rem 0.75rem;
+
+    span {
+      display: none;
     }
   }
 }
