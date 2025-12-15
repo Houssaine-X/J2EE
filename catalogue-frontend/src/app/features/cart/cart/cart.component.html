@@ -1,0 +1,138 @@
+<div class="cart-container">
+  <div class="cart-header">
+    <h1>
+      <i class="pi pi-shopping-cart"></i>
+      Shopping Cart
+    </h1>
+  </div>
+
+  <div *ngIf="(cartItems$ | async)?.length === 0" class="empty-cart">
+    <i class="pi pi-shopping-cart"></i>
+    <h2>Your cart is empty</h2>
+    <p>Add some products to get started!</p>
+    <p-button
+      label="Continue Shopping"
+      icon="pi pi-arrow-left"
+      (onClick)="continueShopping()"
+      styleClass="p-button-lg">
+    </p-button>
+  </div>
+
+  <div *ngIf="(cartItems$ | async) as items" class="cart-content">
+    <div *ngIf="items.length > 0" class="cart-main">
+      <!-- Cart Items -->
+      <p-card styleClass="cart-items-card">
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <h2>Cart Items ({{ totalItems$ | async }})</h2>
+            <p-button
+              label="Clear Cart"
+              icon="pi pi-trash"
+              (onClick)="clearCart()"
+              styleClass="p-button-danger p-button-text">
+            </p-button>
+          </div>
+        </ng-template>
+
+        <div class="cart-item" *ngFor="let item of items">
+          <div class="item-image">
+            <img
+              [src]="item.product.imageUrl || 'assets/images/no-image.svg'"
+              [alt]="item.product.nom"
+            />
+          </div>
+
+          <div class="item-details">
+            <h3>{{ item.product.nom }}</h3>
+            <p class="item-category">
+              <i class="pi pi-tag"></i>
+              {{ item.product.categoryName }}
+            </p>
+            <p class="item-description">{{ item.product.description }}</p>
+            <p class="item-stock">
+              <i class="pi pi-box"></i>
+              Stock: {{ item.product.stockQuantity }}
+            </p>
+          </div>
+
+          <div class="item-quantity">
+            <label>Quantity</label>
+            <p-inputNumber
+              [(ngModel)]="item.quantity"
+              [showButtons]="true"
+              [min]="1"
+              [max]="item.product.stockQuantity"
+              (onInput)="updateQuantity(item.product.id ?? 0, item.quantity)"
+              buttonLayout="horizontal"
+              decrementButtonClass="p-button-danger"
+              incrementButtonClass="p-button-success">
+            </p-inputNumber>
+          </div>
+
+          <div class="item-price">
+            <div class="unit-price">
+              <span class="label">Unit Price:</span>
+              <span class="value">{{ item.product.prix | currency: 'EUR' }}</span>
+            </div>
+            <div class="total-price">
+              <span class="label">Total:</span>
+              <span class="value">{{ getItemTotal(item) | currency: 'EUR' }}</span>
+            </div>
+          </div>
+
+          <div class="item-actions">
+            <p-button
+              icon="pi pi-trash"
+              (onClick)="removeItem(item.product.id ?? 0)"
+              styleClass="p-button-danger p-button-text p-button-rounded"
+              pTooltip="Remove item">
+            </p-button>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Order Summary -->
+      <p-card styleClass="order-summary-card">
+        <ng-template pTemplate="header">
+          <h2>Order Summary</h2>
+        </ng-template>
+
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>{{ totalAmount$ | async | currency: 'EUR' }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span>Items:</span>
+          <span>{{ totalItems$ | async }}</span>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>{{ totalAmount$ | async | currency: 'EUR' }}</span>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="summary-actions">
+            <p-button
+              label="Continue Shopping"
+              icon="pi pi-arrow-left"
+              (onClick)="continueShopping()"
+              styleClass="p-button-text p-button-lg w-full mb-2">
+            </p-button>
+            <p-button
+              label="Proceed to Checkout"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              (onClick)="proceedToCheckout()"
+              styleClass="p-button-success p-button-lg w-full">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+  </div>
+</div>
+
