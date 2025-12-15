@@ -1,11 +1,21 @@
 <div class="product-list-container">
-  <div class="header-section">
-    <h1>Product Catalogue</h1>
-    <p class="subtitle">Browse our collection of products</p>
+  <!-- Toast for notifications -->
+  <p-toast position="top-right"></p-toast>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Discover the Future of Shopping</h1>
+      <p>Explore our exclusive collection of premium products at unbeatable prices.</p>
+    </div>
   </div>
 
-  <div class="filter-section">
-    <div class="search-bar">
+  <!-- Toolbar with Search -->
+  <div class="toolbar-section">
+    <div class="section-title">
+      <h2>Our Products</h2>
+    </div>
+    <div class="search-wrapper">
       <span class="p-input-icon-left">
         <i class="pi pi-search"></i>
         <input
@@ -14,15 +24,9 @@
           [(ngModel)]="searchKeyword"
           (keyup.enter)="onSearch()"
           placeholder="Search products..."
-          class="search-input"
+          class="p-inputtext-sm search-input"
         />
       </span>
-      <p-button
-        label="Search"
-        icon="pi pi-search"
-        (onClick)="onSearch()"
-        styleClass="p-button-primary"
-      ></p-button>
     </div>
   </div>
 
@@ -39,7 +43,7 @@
 
   <div class="products-grid" *ngIf="!(loading$ | async) && !(error$ | async)">
     <div class="product-card-wrapper" *ngFor="let product of (products$ | async)">
-      <p-card [header]="product.nom" styleClass="product-card">
+      <p-card styleClass="product-card h-full">
         <ng-template pTemplate="header">
           <div class="product-image-container">
             <img
@@ -81,6 +85,7 @@
                 label="Add to Cart"
                 [disabled]="!product.disponible || product.stockQuantity === 0"
                 styleClass="p-button-success"
+                (onClick)="addToCart(product)"
               ></p-button>
               <p-button
                 icon="pi pi-eye"
@@ -103,4 +108,3 @@
     <p-button label="Clear Filters" (onClick)="loadProducts()"></p-button>
   </div>
 </div>
-

@@ -1,149 +1,144 @@
 .product-list-container {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 0;
+  min-height: 100%;
 }
 
-.header-section {
+.hero-section {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  padding: 4rem 2rem;
   text-align: center;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 
   h1 {
-    color: #333;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
   }
 
-  .subtitle {
-    color: #666;
-    font-size: 1.1rem;
+  p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
   }
 }
 
-.filter-section {
-  margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar {
+.toolbar-section {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 2rem;
+  margin-bottom: 1.5rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 
-  .search-input {
-    flex: 1;
-    width: 100%;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
   }
 
-  .p-input-icon-left {
-    flex: 1;
-    width: 100%;
+  .section-title h2 {
+    font-size: 1.75rem;
+    color: #333;
+    margin: 0;
+    font-weight: 600;
+  }
 
-    input {
-      width: 100%;
+  .search-wrapper {
+    display: flex;
+    align-items: center;
+
+    .p-input-icon-left {
+      width: 300px;
+
+      @media (max-width: 768px) {
+        width: 100%;
+      }
+
+      input {
+        width: 100%;
+        border-radius: 2rem;
+        padding-left: 2.5rem;
+      }
+
+      i {
+        left: 1rem;
+      }
     }
   }
 }
 
-
-.loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem;
-  gap: 1rem;
-
-  p {
-    color: #666;
-    font-size: 1.1rem;
-  }
-}
-
-.error-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  background: #fff5f5;
-  border: 1px solid #fc8181;
-  border-radius: 8px;
-  gap: 1rem;
-
-  i {
-    font-size: 3rem;
-    color: #f56565;
-  }
-
-  p {
-    color: #c53030;
-    font-size: 1.1rem;
-  }
-}
-
 .products-grid {
+  padding: 0 2rem 2rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-::ng-deep .p-dataview-content {
-  background: transparent !important;
-}
-
-::ng-deep .p-dataview-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
 }
 
 .product-card-wrapper {
   height: 100%;
 }
 
-::ng-deep .product-card {
+:host ::ng-deep .product-card {
   height: 100%;
   display: flex;
   flex-direction: column;
   transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.12);
   }
 
   .p-card-body {
     flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 1.25rem;
   }
 
   .p-card-content {
     flex: 1;
+    padding: 0;
   }
 }
 
 .product-image-container {
   position: relative;
-  height: 250px;
+  width: 100%;
+  padding-top: 75%; /* 4:3 Aspect Ratio */
+  background-color: #f4f4f4;
   overflow: hidden;
-  background: #f5f5f5;
+  border-radius: 6px 6px 0 0;
 
   .product-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
   }
 
-  .stock-badge {
+  &:hover .product-image {
+    transform: scale(1.05);
+  }
+
+  p-tag {
     position: absolute;
     top: 10px;
     right: 10px;
+    z-index: 1;
   }
 }
 
@@ -242,4 +237,3 @@
     font-size: 1.2rem;
   }
 }
-
