@@ -1,0 +1,106 @@
+<div class="add-product-container">
+  <div class="add-product-card">
+    <h2>Add New Product</h2>
+
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="nom">Product Name *</label>
+        <input
+          type="text"
+          id="nom"
+          formControlName="nom"
+          placeholder="Enter product name"
+          class="form-control"
+        />
+        <div class="error" *ngIf="productForm.get('nom')?.invalid && productForm.get('nom')?.touched">
+          Product name is required (min 3 characters)
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Enter product description"
+          class="form-control"
+          rows="4"
+        ></textarea>
+        <div class="error" *ngIf="productForm.get('description')?.invalid && productForm.get('description')?.touched">
+          Description is required (min 10 characters)
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="prix">Price *</label>
+          <input
+            type="number"
+            id="prix"
+            formControlName="prix"
+            placeholder="0.00"
+            class="form-control"
+            step="0.01"
+          />
+          <div class="error" *ngIf="productForm.get('prix')?.invalid && productForm.get('prix')?.touched">
+            Valid price is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="stockQuantity">Stock Quantity *</label>
+          <input
+            type="number"
+            id="stockQuantity"
+            formControlName="stockQuantity"
+            placeholder="0"
+            class="form-control"
+          />
+          <div class="error" *ngIf="productForm.get('stockQuantity')?.invalid && productForm.get('stockQuantity')?.touched">
+            Valid stock quantity is required
+          </div>
+        </div>
+      </div>
+
+
+      <div class="form-group">
+        <label for="categoryName">Category *</label>
+        <select id="categoryName" formControlName="categoryName" class="form-control">
+          <option value="">Select a category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Computers">Computers</option>
+          <option value="Phones">Phones</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Home Appliances">Home Appliances</option>
+          <option value="Gaming">Gaming</option>
+          <option value="Audio">Audio</option>
+        </select>
+        <div class="error" *ngIf="productForm.get('categoryName')?.invalid && productForm.get('categoryName')?.touched">
+          Category is required
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button type="button" class="btn-cancel" (click)="onCancel()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="productForm.invalid || isSubmitting"
+        >
+          {{ isSubmitting ? 'Adding...' : 'Add Product' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
